@@ -1,4 +1,4 @@
-# Nesting in Rails Apps
+# Nesting in Rails Apps 🪆
 In this lesson, we will cover the concept of nesting in Rails applications. We will explore nested routes and accepts_nested_attributes_for, providing guidelines on when to use them and examples to illustrate their usage.
 
 ## Introduction to Nesting
