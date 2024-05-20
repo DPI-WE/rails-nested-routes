@@ -1,11 +1,8 @@
-# Nesting in Rails Apps 🪆
-In this lesson, we will cover the concept of nesting in Rails applications. We will explore nested routes and `accepts_nested_attributes_for`, providing guidelines on when to use them and examples to illustrate their usage.
+# Nesting Routes in Rails Apps 🪆
+In this lesson, we will cover the concept of nesting in Rails applications. We will explore nested routes, providing guidelines on when to use them and examples to illustrate their usage.
 
-## Introduction to Nesting
-Nesting is a way of organizing and structuring your code to reflect the hierarchical relationships between different resources. In Rails, nesting can be applied to routes and models to create more intuitive and manageable applications.
-
-## Nested Routes
-Nested routes in Rails are used to express a hierarchical relationship between resources. For example, if you have a Project model that has many Tasks, you can nest the routes for tasks within the routes for projects.
+## Introduction to Nested Routes
+Nesting is a way of organizing and structuring your code to reflect the hierarchical relationships between different resources. In Rails, nesting can be applied to routes to create more intuitive and manageable applications. Nested routes in Rails are used to express a hierarchical relationship between resources. For example, if you have a Project model that has many Tasks, you can nest the routes for tasks within the routes for projects.
 
 ### When to Use Nested Routes
 - **Hierarchical Data**: When one resource logically belongs to another (e.g., tasks belonging to a project).
@@ -100,115 +97,9 @@ class TasksController < ApplicationController
 end
 ```
 
-## Nested Attributes
-Nested attributes allow you to save attributes on associated records through the parent record. This feature is especially useful when dealing with forms that need to update multiple models.
-
-### When to Use Nested Attributes
-- **Complex Forms**: When you have a form that needs to handle attributes for multiple related models.
-- **Efficient Updates**: To update parent and child records in a single request.
-
-### Example of Nested Attributes
-Here’s how you can set up nested attributes in a Rails application:
-
-```ruby
-# app/models/project.rb
-class Project < ApplicationRecord
-  has_many :tasks, dependent: :destroy
-  accepts_nested_attributes_for :tasks, allow_destroy: true
-end
-```
-
-With this setup, you can manage `Task` records through the `Project` model. For example, in your `ProjectsController`, you can permit nested attributes for tasks:
-
-```ruby
-# app/controllers/projects_controller.rb
-class ProjectsController < ApplicationController
-  def new
-    @project = Project.new
-    @project.tasks.build
-  end
-
-  def create
-    @project = Project.new(project_params)
-    if @project.save
-      redirect_to @project, notice: 'Project was successfully created.'
-    else
-      render :new
-    end
-  end
-
-  def edit
-    @project = Project.find(params[:id])
-  end
-
-  def update
-    @project = Project.find(params[:id])
-    if @project.update(project_params)
-      redirect_to @project, notice: 'Project was successfully updated.'
-    else
-      render :edit
-    end
-  end
-
-  private
-
-  def project_params
-    params.require(:project).permit(:name, :description, tasks_attributes: [:id, :name, :description, :due_date, :_destroy])
-  end
-end
-```
-
-### Form with Nested Attributes
-Here’s an example of a form that handles nested attributes:
-
-```erb
-<!-- app/views/projects/_form.html.erb -->
-<%= form_with(model: @project) do |form| %>
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_area :description %>
-  </div>
-
-  <h3>Tasks</h3>
-  <%= form.fields_for :tasks do |task_form| %>
-    <div class="nested-fields">
-      <div class="field">
-        <%= task_form.label :name %>
-        <%= task_form.text_field :name %>
-      </div>
-      <div class="field">
-        <%= task_form.label :description %>
-        <%= task_form.text_area :description %>
-      </div>
-      <div class="field">
-        <%= task_form.label :due_date %>
-        <%= task_form.date_field :due_date %>
-      </div>
-      <%= task_form.check_box :_destroy %>
-      <%= task_form.label :_destroy, "Remove task" %>
-    </div>
-  <% end %>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
-```
-
-## Guidelines for Using Nested Routes and Nested Attributes
-
-### Nested Routes
+## Guidelines for Using Nested Routes
 - **Limit Nesting Depth**: Avoid deep nesting. Typically, one level of nesting is sufficient.
 - **Use Only When Necessary**: Only use nested routes when there is a clear hierarchical relationship.
-
-### Nested Attributes
-- **Use for Complex Forms**: Use nested attributes for forms that need to handle multiple models.
-- **Manage Dependencies**: Ensure dependent attributes are managed correctly, especially when allowing destruction of nested records.
 
 ## Quiz
 
@@ -221,15 +112,6 @@ Here’s an example of a form that handles nested attributes:
   - Correct! Nested routes help express hierarchical relationships.
 {: .choose_best #benefit_of_nested_routes title="Benefit of Nested Routes" points="1" answer="3"}
 
-- Which method is used to allow nested attributes in a Rails model?
-- `accepts_nested_attributes_for`
-  - Correct! This method is used to enable nested attributes for associations.
-- `has_many`
-  - Not correct. has_many defines a one-to-many association.
-- `belongs_to`
-  - Not correct. belongs_to defines a one-to-one association.
-{: .choose_best #nested_attributes_method title="Method for Nested Attributes" points="1" answer="1"}
-
 - Nested routes should be used for deeply nested resources to reflect all hierarchical relationships.
 - True
   - Not correct. Deep nesting should be avoided to keep routes manageable.
@@ -237,14 +119,7 @@ Here’s an example of a form that handles nested attributes:
   - Correct! Deep nesting is generally discouraged in Rails.
 {: .choose_best #deep_nesting title="Deep Nesting in Routes" points="1" answer="2"}
 
-- The `accepts_nested_attributes_for` method allows you to save attributes on associated records through the parent record.
-- True
-  - Correct! This method is used for handling nested attributes.
-- False
-  - Not correct. `accepts_nested_attributes_for` is indeed used for this purpose.
-{: .choose_best #nested_attributes_true_false title="Accepts Nested Attributes" points="1" answer="1"}
-
 ## Conclusion
-Nesting in Rails, through nested routes and `accepts_nested_attributes_for`, provides a powerful way to manage complex relationships and forms in your application. By following the guidelines and examples provided, you can implement these features effectively to create intuitive and maintainable Rails applications.
+Nesting in Rails, through nested routes, provides a powerful way to manage complex relationships and forms in your application. By following the guidelines and examples provided, you can implement these features effectively to create intuitive and maintainable applications.
 
 Happy coding! 🚀
